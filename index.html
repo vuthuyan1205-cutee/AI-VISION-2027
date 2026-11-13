@@ -523,7 +523,7 @@ section{position:relative}
   .bar>.btn{padding:9px 18px!important;font-size:13.5px!important}
 }
 
-@media(max-width:700px){.stage{aspect-ratio:720/600!important;height:auto!important;border-radius:22px}}
+@media(max-width:700px){.stage{aspect-ratio:auto!important;height:auto!important;min-height:0!important;border-radius:22px;display:block!important;opacity:1!important;transform:none!important}.stage::before{content:"";display:block;padding-top:83.334%}}
 .dv-nav{display:none}
 @media(max-width:700px){#stage{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}}
 @media(max-width:700px){.dv-nav{display:grid;place-items:center;position:absolute;top:50%;z-index:3;width:32px;height:32px;margin-top:-16px;border:0;border-radius:50%;background:rgba(255,255,255,.9);color:var(--blue-700);font:700 22px/1 var(--body);box-shadow:0 6px 16px rgba(19,73,181,.25);cursor:pointer}.dv-nav.prev{left:4px}.dv-nav.next{right:4px}}
@@ -538,7 +538,8 @@ section{position:relative}
   .tabs{display:grid!important;grid-template-columns:1fr 1fr!important;overflow:visible!important;margin-inline:0!important;padding:0!important;gap:10px!important}
   .tab{min-width:0!important;padding:12px 8px 14px!important}
   .tab:last-child{grid-column:1/-1}
-  .tab .ico-wrap{display:none!important}
+  .tab .ico-wrap,.tab .ico-wrap img{width:64px!important;height:64px!important}
+  .tab .ico-wrap{margin:0 auto}
   .regcard li{padding:8px 0;font-size:16px;line-height:1.5}
   .regcard a{display:inline-block;padding:6px 2px;min-height:40px}
   .hero .invite{white-space:normal!important;font-size:15px!important;text-align:center;justify-content:center;gap:0!important;padding:0 18px;line-height:1.35}
@@ -572,6 +573,32 @@ section{position:relative}
   .ok-card .ok-pill{padding:6px 12px;font-size:11.5px}
   .ok-main .ok-sub,.ok-facts li{font-size:14px}
   .ok-note{font-size:13px;padding:9px 12px}
+}
+
+/* phone header: one single row */
+@media(max-width:760px){
+  header.top .bar{display:flex!important;flex-wrap:nowrap!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:6px!important;padding:8px 10px!important;min-height:0!important}
+  header.top .bar>*{order:0!important;margin:0!important;width:auto!important}
+  header.top .brand{gap:5px!important;flex:none}
+  header.top .brand img{height:13px!important;width:auto!important}
+  header.top .brand .sep{height:12px!important}
+  header.top .collab{display:flex!important;align-items:center;gap:5px!important;border:0!important;padding:0!important;flex:0 1 auto;min-width:0}
+  header.top .collab small{display:none!important}
+  header.top .collab img{height:11px!important;width:auto!important}
+  header.top .collab img.vgs{height:10px!important}
+  header.top .nav{display:none!important}
+  header.top .bar>.btn{flex:none;padding:6px 10px!important;font-size:12px!important;width:auto!important}
+  .hero{padding-top:84px!important}
+  header.top .bar{background:rgba(255,255,255,.97)!important}
+}
+@media(max-width:380px){
+  header.top .bar{gap:4px!important;padding:7px 8px!important}
+  header.top .brand{gap:4px!important}
+  header.top .brand img{height:11px!important}
+  header.top .collab{gap:4px!important}
+  header.top .collab img{height:9px!important}
+  header.top .collab img.vgs{height:8px!important}
+  header.top .bar>.btn{padding:5px 8px!important;font-size:11px!important}
 }
 /* register section */
 .reg{margin-top:70px;position:relative}
@@ -1399,7 +1426,8 @@ var demos=[{n:'B2B sales',f:drawSales},{n:'Electronics manufacturing',f:drawFact
 var cur=0,start=performance.now(),visible=false,tabs=$$('.tab'),badge=$('#badge');
 var TOPICS=[["09:35 - 10:00", "AI for B2B Prospecting and Customer Development", "VNPT-IT", "How AI helps B2B sales teams spot demand signals, research target companies, score prospects and pass qualified leads straight into the CRM."], ["10:00 - 10:20", "AI in Electronics Manufacturing", "VNPT Technology", "How AI and production data drive smarter electronics manufacturing, from automated quality inspection to data-driven decisions across smart factory operations."], ["10:20 - 10:35", "AI for Digitization and 3D Reconstruction", "VNPT-IT", "How AI turns site photos, scans and 2D drawings into 3D models, BIM and digital twins for investors, contractors and technical consultants."], ["10:35 - 10:50", "AI for Enterprise Automation", "SMF", "How companies use AI to automate routine business processes, from documents and emails to updates in ERP and CRM systems."], ["10:50 - 11:05", "AI Applications in Banking", "Bank of China", "How banks and financial institutions use AI to check payments in seconds and flag fraud and risk before it reaches customers."]];var dIn=$('#dIn');function showDetail(i){var d=TOPICS[i];dIn.classList.add('swap');setTimeout(function(){$('#dNo').textContent='Topic 0'+(i+1);$('#dTime').innerHTML=d[0];$('#dTitle').innerHTML=d[1];$('#dHost').innerHTML=d[2]?'<i></i>Presented by '+d[2]:'';$('#dText').innerHTML=d[3];dIn.classList.remove('swap')},reduce?0:220)}
 function select(i){cur=i;start=performance.now();badge.textContent=demos[i].n;showDetail(i);tabs.forEach(function(b,k){b.setAttribute('aria-selected',k===i?'true':'false');b.style.removeProperty('--p')})}
-tabs.forEach(function(b){b.addEventListener('click',function(){select(+b.dataset.i)})});
+tabs.forEach(function(b){b.addEventListener('click',function(){select(+b.dataset.i);try{DV.v=0;DV.p=0;DV.t=-1e9}catch(x){}
+  if(matchMedia('(max-width:700px)').matches){var st=$('#stage'),hb=document.querySelector('header.top'),hh=hb?hb.getBoundingClientRect().bottom:110;if(st)scrollTo({top:st.getBoundingClientRect().top+pageYOffset-hh-12,behavior:'smooth'})}})});
 /* clickable step buttons inside each demo */
 var STEPS=[{x:[40,268,496,724],w:206,y:26,h:44,s:[0,8,15,23]},{x:[40,268,496,724],w:206,y:26,h:44,s:[0,12,18,25]},{x:[60,382,704],w:196,y:40,h:48,s:[0,3.84,14.4]},{x:[40,268,496,724],w:206,y:26,h:44,s:[0,7,15,24]},null];
 function stepAt(e){var S=STEPS[cur];if(!S)return -1;var r=cv.getBoundingClientRect(),k=cv.width/r.width,px=(e.clientX-r.left)*k,py=(e.clientY-r.top)*k,sc=Math.min(cv.width/W,cv.height/H),ox=(cv.width-W*sc)/2,oy=(cv.height-H*sc)/2,x=(px-ox)/sc,y=(py-oy)/sc;
@@ -1527,7 +1555,7 @@ requestAnimationFrame(helloFrame);
     var C=['#3998FD','#1F66E0','#F0B84B','#ff5fa2','#22b573','#9CCBFA'],P=[];for(var i=0;i<160;i++){var side=i%2;P.push({x:side?innerWidth+10:-10,y:innerHeight*.55,vx:(side?-1:1)*(4+Math.random()*7),vy:-(7+Math.random()*9),r:Math.random()*6.28,vr:(Math.random()-.5)*.3,w:6+Math.random()*6,h:8+Math.random()*8,c:C[i%C.length]})}
     var t0=performance.now();(function st(n){var t=n-t0;x.clearRect(0,0,innerWidth,innerHeight);P.forEach(function(p){p.vy+=.22;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.globalAlpha=Math.max(0,1-t/3800);x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r*2)));x.restore()});if(t<3800)requestAnimationFrame(st);else c.remove()})(t0)}catch(e){}}
   (function(){var ph=f.elements.phone;if(ph)ph.addEventListener('input',function(){var c=this.value.replace(/\D/g,'');if(c!==this.value)this.value=c})})();
-  function sent(){try{var sc=$('#okScene');if(sc&&!sc.style.backgroundImage&&hallImg&&hallImg.src)sc.style.backgroundImage='url('+hallImg.src+')';var nm=val('fullName'),em=val('email'),co=val('company');$('#rfName').textContent=(nm||'dear guest').split(' ').slice(-1)[0]&&nm?nm:'dear guest';$('#tkName').textContent=nm||'-';$('#tkCo').textContent=co||'-';$('#tkPax').textContent=val('attendees')||'1';0}catch(x){}f.classList.add('sent');done.hidden=false;try{var hb=document.querySelector('header.top'),hh=hb?hb.getBoundingClientRect().bottom:90,y=done.getBoundingClientRect().top+pageYOffset-hh-10;scrollTo({top:y,behavior:'smooth'})}catch(x){}confetti()}
+  function sent(){try{var sc=$('#okScene');if(sc&&!sc.style.backgroundImage&&hallImg&&hallImg.src)sc.style.backgroundImage='url('+hallImg.src+')';var nm=val('fullName'),em=val('email'),co=val('company');$('#rfName').textContent=(nm||'dear guest').split(' ').slice(-1)[0]&&nm?nm:'dear guest';$('#tkName').textContent=nm||'-';$('#tkCo').textContent=co||'-';$('#tkPax').textContent=val('attendees')||'1';0}catch(x){}f.classList.add('sent');done.hidden=false;var toDone=function(sm){try{var hb=document.querySelector('header.top'),hh=hb?hb.getBoundingClientRect().bottom:90,y=done.getBoundingClientRect().top+pageYOffset-hh-10;scrollTo({top:Math.max(0,y),behavior:sm?'smooth':'auto'})}catch(x){}};toDone(true);setTimeout(function(){toDone(false)},700);setTimeout(function(){toDone(false)},1500);confetti()}
   $('#rfEdit').addEventListener('click',function(){f.reset();f.classList.remove('sent');done.hidden=true});
   f.addEventListener('submit',function(e){
     e.preventDefault();showErr('');var bad=check();
