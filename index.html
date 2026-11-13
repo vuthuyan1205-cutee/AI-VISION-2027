@@ -523,7 +523,10 @@ section{position:relative}
   .bar>.btn{padding:9px 18px!important;font-size:13.5px!important}
 }
 
-@media(max-width:700px){.stage{aspect-ratio:auto!important;height:min(120vw,520px)!important;border-radius:26px}}
+@media(max-width:700px){.stage{aspect-ratio:720/600!important;height:auto!important;border-radius:22px}}
+.dv-nav{display:none}
+@media(max-width:700px){#stage{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}}
+@media(max-width:700px){.dv-nav{display:grid;place-items:center;position:absolute;top:50%;z-index:3;width:32px;height:32px;margin-top:-16px;border:0;border-radius:50%;background:rgba(255,255,255,.9);color:var(--blue-700);font:700 22px/1 var(--body);box-shadow:0 6px 16px rgba(19,73,181,.25);cursor:pointer}.dv-nav.prev{left:4px}.dv-nav.next{right:4px}}
 
 /* ---------- production polish: readability, tap targets, calmer motion on phones ---------- */
 .when .pill,.hint,.unit span,.ai-chip,.tab .no,.ag .k,.t-stub small,.t-stub span,.t-row small,.chat .src,.stage .note,.d-row small,.copy{font-size:12px!important}
@@ -867,7 +870,7 @@ if(document.readyState!=='loading')tick();else document.addEventListener('DOMCon
       <div class="detail rv" id="detail" role="tabpanel" aria-live="polite"><div class="d-in" id="dIn"><span class="d-no" id="dNo">Topic 01</span><span class="d-time" id="dTime">09:35 - 10:00</span><h3 id="dTitle">AI for B2B Prospecting and Customer Development</h3><span class="host" id="dHost"><i></i>Presented by VNPT-IT</span><p id="dText">How AI helps B2B sales teams spot demand signals, research target companies, score prospects and pass qualified leads straight into the CRM.</p><a class="btn btn-ghost" href="#programme">See full agenda</a></div></div>
       <div class="stage rv" style="--d:.12s" id="stage">
         <canvas id="demo" aria-label="Animated illustration of the selected AI topic" role="img"></canvas>
-        <span class="badge"><i></i><span id="badge">B2B sales</span></span>
+        <button class="dv-nav prev" type="button" aria-label="Show left part of the demo">&#8249;</button><button class="dv-nav next" type="button" aria-label="Show right part of the demo">&#8250;</button><span class="badge"><i></i><span id="badge">B2B sales</span></span>
         
       </div>
     </div>
@@ -1407,12 +1410,20 @@ cv.addEventListener('click',function(e){var i=stepAt(e);if(i<0)return;start=perf
 new IntersectionObserver(function(e){if(e[0].isIntersecting&&!visible)start=performance.now();visible=e[0].isIntersecting}).observe(stage);
 window.__demo=null;
 window.__snap=function(i,t,w){var ow=cv.width,oh=cv.height;cv.width=w;cv.height=Math.round(w*H/W);var g=ctx.createLinearGradient(0,0,cv.width,cv.height);g.addColorStop(0,'#fff');g.addColorStop(1,'#e8f4ff');ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=g;ctx.fillRect(0,0,cv.width,cv.height);var sc=cv.width/W;ctx.setTransform(sc,0,0,sc,0,0);demos[i].f(t);var u=cv.toDataURL('image/png');cv.width=ow;cv.height=oh;return u};
+var DV={v:0,p:0,t:-1e9,drag:false};
+(function(){var st=$('#stage');if(!st)return;var go=function(v){DV.v=Math.max(0,Math.min(1,v));DV.t=performance.now()};
+  var pv=st.querySelector('.dv-nav.prev'),nx=st.querySelector('.dv-nav.next');if(pv)pv.addEventListener('click',function(){go(0)});if(nx)nx.addEventListener('click',function(){go(1)});
+  var x0=null,p0=0,pid=null;
+  st.addEventListener('pointerdown',function(e){if(!matchMedia('(max-width:700px)').matches||e.target.closest('.dv-nav'))return;x0=e.clientX;p0=DV.p;pid=e.pointerId;DV.drag=true;try{st.setPointerCapture(pid)}catch(x){}});
+  st.addEventListener('pointermove',function(e){if(x0==null||e.pointerId!==pid)return;go(p0-(e.clientX-x0)/(st.clientWidth*.4))});
+  var end=function(){x0=null;pid=null;DV.drag=false};st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end);
+})();
 function frame(now){
   try{if(visible){
     if(window.__demo){cur=window.__demo.i;start=now-window.__demo.t*DUR}
     var el=now-start;if(el>=DUR){select((cur+1)%demos.length);el=0}
     var t=reduce?.9:el/DUR,sc=Math.min(cv.width/W,cv.height/H);
-    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);if(cv.width/cv.height<1.25){sc=cv.height/H;var vw=cv.width/sc,u=(el/1000%9)/9,pp=u<.38?0:u<.5?(u-.38)/.12:u<.88?1:1-(u-.88)/.12;pp=pp*pp*(3-2*pp);ctx.setTransform(sc,0,0,sc,-(W-vw)*pp*sc,0)}else ctx.setTransform(sc,0,0,sc,(cv.width-W*sc)/2,(cv.height-H*sc)/2);
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);if(cv.width/cv.height<1.25){var VW=720;sc=cv.width/VW;var tgt=(performance.now()-DV.t<15000)?DV.v:(Math.floor(el/8000)%2);DV.p+=(tgt-DV.p)*(DV.drag?.5:.12);ctx.setTransform(sc,0,0,sc,-(W-VW)*DV.p*sc,(cv.height-H*sc)/2)}else ctx.setTransform(sc,0,0,sc,(cv.width-W*sc)/2,(cv.height-H*sc)/2);
     demos[cur].f(t);tabs[cur].style.setProperty('--p',(t*100)+'%');
   }}catch(e){}
   requestAnimationFrame(frame);
