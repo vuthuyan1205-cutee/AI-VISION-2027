@@ -1506,7 +1506,7 @@ requestAnimationFrame(helloFrame);
   function sendGF(d){if(!gfReady()||!window.fetch)return Promise.reject(new Error('gf'));
     var p=new URLSearchParams(),E=GF.e;
     p.append('entry.'+E.fullName,d.fullName);p.append('entry.'+E.company,d.company);p.append('entry.'+E.jobTitle,d.jobTitle);
-    p.append('entry.'+E.email,d.email);p.append('entry.'+E.phone,d.phone);p.append('entry.'+E.attendees,String(d.attendees));
+    p.append('entry.'+E.email,d.email);p.append('entry.'+E.phone,String(d.phone).replace(/\D/g,''));p.append('entry.'+E.attendees,String(d.attendees));
     d.interests.forEach(function(v){if(v==='Other'){p.append('entry.'+E.interests,'__other_option__');p.append('entry.'+E.interests+'.other_option_response',d.interestsOther)}else p.append('entry.'+E.interests,v)});
     p.append('entry.'+E.matching,GF.matching[d.matching]||d.matching);if(d.questions)p.append('entry.'+E.questions,d.questions);
     p.append('fvv','1');p.append('pageHistory',GF.pages);
