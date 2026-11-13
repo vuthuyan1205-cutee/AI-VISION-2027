@@ -949,7 +949,7 @@ if(document.readyState!=='loading')tick();else document.addEventListener('DOMCon
         <label class="fld"><span>2. Company / organization <span class="req">*</span></span><input name="company" required autocomplete="organization"><small>Shown on your participant badge</small></label>
         <label class="fld"><span>3. Job title <span class="req">*</span></span><input name="jobTitle" required autocomplete="organization-title"><small>Your current position or professional title</small></label>
         <label class="fld"><span>4. Email address <span class="req">*</span></span><input name="email" type="email" required autocomplete="email"><small>A business email. Confirmations and updates are sent here.</small></label>
-        <label class="fld"><span>5. Contact number <span class="req">*</span></span><input name="phone" type="tel" required autocomplete="tel" placeholder="+65 ..."><small>Include the country code, e.g. +65 for Singapore</small></label>
+        <label class="fld"><span>5. Contact number <span class="req">*</span></span><input name="phone" type="tel" required autocomplete="tel" inputmode="numeric" pattern="[0-9]*" maxlength="15" placeholder="6591234567"><small>Numbers only, starting with the country code, e.g. 6591234567</small></label>
         <label class="fld"><span>6. Number of attendees <span class="req">*</span></span><input name="attendees" type="number" min="1" max="50" required inputmode="numeric"><small>Representatives from your organization in total</small></label>
       </div>
       <fieldset class="fld" data-group="interests"><legend>7. Areas of interest <span class="req">*</span></legend><small>Which topics are most relevant to your organization's priorities?</small>
@@ -1482,7 +1482,7 @@ requestAnimationFrame(helloFrame);
     var bad=[];$$('.fld',f).forEach(function(x){x.classList.remove('bad')});
     ['fullName','company','jobTitle','email','phone','attendees'].forEach(function(n){var e=f.elements[n],v=val(n),ok=!!v;
       if(ok&&n==='email')ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-      if(ok&&n==='phone')ok=/^\+?[0-9\s().-]{7,}$/.test(v);
+      if(ok&&n==='phone')ok=/^[0-9]{7,15}$/.test(v);
       if(ok&&n==='attendees')ok=+v>=1&&+v<=50;
       if(!ok){e.closest('.fld').classList.add('bad');bad.push(e)}});
     var ints=$$('input[name=interests]:checked',f);if(!ints.length){$('[data-group=interests]').classList.add('bad');bad.push($('input[name=interests]',f))}
@@ -1515,6 +1515,7 @@ requestAnimationFrame(helloFrame);
   function confetti(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var c=document.createElement('canvas');c.id='okConf';document.body.appendChild(c);var x=c.getContext('2d'),d=Math.min(2,devicePixelRatio||1);c.width=innerWidth*d;c.height=innerHeight*d;x.scale(d,d);
     var C=['#3998FD','#1F66E0','#F0B84B','#ff5fa2','#22b573','#9CCBFA'],P=[];for(var i=0;i<160;i++){var side=i%2;P.push({x:side?innerWidth+10:-10,y:innerHeight*.55,vx:(side?-1:1)*(4+Math.random()*7),vy:-(7+Math.random()*9),r:Math.random()*6.28,vr:(Math.random()-.5)*.3,w:6+Math.random()*6,h:8+Math.random()*8,c:C[i%C.length]})}
     var t0=performance.now();(function st(n){var t=n-t0;x.clearRect(0,0,innerWidth,innerHeight);P.forEach(function(p){p.vy+=.22;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.globalAlpha=Math.max(0,1-t/3800);x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r*2)));x.restore()});if(t<3800)requestAnimationFrame(st);else c.remove()})(t0)}catch(e){}}
+  (function(){var ph=f.elements.phone;if(ph)ph.addEventListener('input',function(){var c=this.value.replace(/\D/g,'');if(c!==this.value)this.value=c})})();
   function sent(){try{var sc=$('#okScene');if(sc&&!sc.style.backgroundImage&&hallImg&&hallImg.src)sc.style.backgroundImage='url('+hallImg.src+')';var nm=val('fullName'),em=val('email'),co=val('company');$('#rfName').textContent=(nm||'dear guest').split(' ').slice(-1)[0]&&nm?nm:'dear guest';$('#tkName').textContent=nm||'-';$('#tkCo').textContent=co||'-';$('#tkPax').textContent=val('attendees')||'1';0}catch(x){}f.classList.add('sent');done.hidden=false;try{var hb=document.querySelector('header.top'),hh=hb?hb.getBoundingClientRect().bottom:90,y=done.getBoundingClientRect().top+pageYOffset-hh-10;scrollTo({top:y,behavior:'smooth'})}catch(x){}confetti()}
   $('#rfEdit').addEventListener('click',function(){f.reset();f.classList.remove('sent');done.hidden=true});
   f.addEventListener('submit',function(e){
