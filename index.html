@@ -1448,9 +1448,12 @@ tabs.forEach(function(b){b.addEventListener('click',function(){select(+b.dataset
 /* clickable step buttons inside each demo */
 var STEPS=[{x:[40,268,496,724],w:206,y:26,h:44,s:[0,8,15,23]},{x:[40,268,496,724],w:206,y:26,h:44,s:[0,12,18,25]},{x:[60,382,704],w:196,y:40,h:48,s:[0,3.84,14.4]},{x:[40,268,496,724],w:206,y:26,h:44,s:[0,7,15,24]},null];
 function stepAt(e){var S=STEPS[cur];if(!S)return -1;var r=cv.getBoundingClientRect(),k=cv.width/r.width,px=(e.clientX-r.left)*k,py=(e.clientY-r.top)*k,sc=CT?CT.sc:Math.min(cv.width/W,cv.height/H),ox=CT?CT.tx:(cv.width-W*sc)/2,oy=CT?CT.ty:(cv.height-H*sc)/2,x=(px-ox)/sc,y=(py-oy)/sc;
-  if(y<S.y-4||y>S.y+S.h+4)return -1;for(var i=0;i<S.x.length;i++)if(x>=S.x[i]&&x<=S.x[i]+S.w)return i;return -1}
+  var tol=(CT&&CT.sc<cv.width/W*1.01&&cv.width/cv.height>=1.25)?4:16;if(y<S.y-tol||y>S.y+S.h+tol)return -1;for(var i=0;i<S.x.length;i++)if(x>=S.x[i]&&x<=S.x[i]+S.w)return i;return -1}
 cv.addEventListener('pointermove',function(e){cv.style.cursor=stepAt(e)>-1?'pointer':''});
-cv.addEventListener('click',function(e){if(DV.moved){DV.moved=false;return}var i=stepAt(e);if(i<0)return;start=performance.now()-STEPS[cur].s[i]*1000-60});
+function goStep(i){start=performance.now()-STEPS[cur].s[i]*1000-60;var S=STEPS[cur];if(cv.width/cv.height<1.25){DV.v=Math.max(0,Math.min(1,(S.x[i]+S.w/2-360)/(W-720)));DV.t=performance.now()}}
+var tapAt=0;
+cv.addEventListener('pointerup',function(e){if(e.pointerType==='mouse'||DV.moved)return;var i=stepAt(e);if(i<0)return;tapAt=performance.now();goStep(i)});
+cv.addEventListener('click',function(e){if(DV.moved){DV.moved=false;return}if(performance.now()-tapAt<600)return;var i=stepAt(e);if(i<0)return;goStep(i)});
 
 new IntersectionObserver(function(e){if(e[0].isIntersecting&&!visible)start=performance.now();visible=e[0].isIntersecting}).observe(stage);
 window.__demo=null;
